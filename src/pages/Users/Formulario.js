@@ -1,8 +1,8 @@
+import React, { useEffect, useState } from "react";
+
 import style from "./style";
 
-import { Box, Modal, MenuItem, Grid, Button } from "@mui/material";
-
-import * as React from "react";
+import { Box, Modal, MenuItem, Grid, Button, Typography } from "@mui/material";
 
 import { Formik, Form, Field } from "formik";
 
@@ -12,41 +12,162 @@ import axios from "axios";
 
 import Swal from "sweetalert2";
 
-const newrecord = async (value) => {
-  await axios
-    .post("http://localhost:8000/sistemareg", value)
-    .then(function (response) {
-      Swal.fire({
-        title: "Registro guardado",
-        text: "Acción realizada satisfactoriamente",
-        icon: "success",
-        confirmButtonText: "Aceptar",
-      });
-      console.log(response);
-    })
-    .catch(function (error) {
-      console.log(error);
-    });
-};
+const api = axios.create({
+  baseURL: "http://localhost:8000",
+});
 
-const Formulario = ({ open, onClose }) => {
+const Formulario = ({ open, onClose, postedit, currentrow }) => {
+  const [users, setUsers] = useState([]);
+  const [tipdoc, setTipDoc] = useState([]);
+  const [procdest, setProcDest] = useState([]);
+  const [tipsop, setTipSop] = useState([]);
+
+  //llamar a inincio del modal
+  useEffect(() => {
+    if (open === true) {
+      GetUserByUnit();
+      GetTipDoc();
+      GetProcDest();
+      GetTipSop();
+    }
+  }, [open]);
+
+  //Guardar nuevo registro
+  const newrecord = async (value) => {
+    await api({
+      method: "post",
+      url: "sistemareg",
+      data: value,
+    })
+      .then(function (response) {
+        Swal.fire({
+          title: "Registro guardado",
+          text: "Acción realizada satisfactoriamente",
+          icon: "success",
+          confirmButtonText: "Aceptar",
+        });
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  };
+
+  //Guardar nuevo registro
+  const updaterecord = async (value) => {
+    console.log(JSON.stringify(value, null, '\t'));
+    await api({
+      method: "put",
+      url: "/sistemareg/" + currentrow.Co_reg,
+      data: value,
+    })
+      .then(function (response) {
+        Swal.fire({
+          title: "Registro actualizado",
+          text: "Acción realizada satisfactoriamente",
+          icon: "success",
+          confirmButtonText: "Aceptar",
+        });
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  };
+
+  //Poblar select de usuarios
+  const GetUserByUnit = async () => {
+    await api({
+      method: "get",
+      url: `/sistema-nombres-reg/unidad/45`,
+    })
+      .then(function (response) {
+        const datos = response.data;
+
+        if (datos.message === "OK") {
+          setUsers(datos.data);
+        }
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  };
+
+  //Poblar select de Tipo Documento
+  const GetTipDoc = async () => {
+    await api({
+      method: "get",
+      url: `/sistema-tip-doc-cal`,
+    })
+      .then(function (response) {
+        const datos = response.data;
+
+        if (datos.message === "OK") {
+          setTipDoc(datos.data);
+        }
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  };
+
+  //Poblar select Procedencia Destino
+  const GetProcDest = async () => {
+    await api({
+      method: "get",
+      url: `/sistemaprocdest`,
+    })
+      .then(function (response) {
+        const datos = response.data;
+
+        if (datos.message === "OK") {
+          setProcDest(datos.data);
+        }
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  };
+
+  //Poblar select Procedencia Destino
+  const GetTipSop = async () => {
+    await api({
+      method: "get",
+      url: `/sistema-tip-sal`,
+    })
+      .then(function (response) {
+        const datos = response.data;
+
+        if (datos.message === "OK") {
+          setTipSop(datos.data);
+        }
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  };
+
   return (
     <Modal open={open} onClose={onClose}>
       <Box sx={style}>
+        <Box>
+          <Typography color="darkred" variant="h3" gutterBottom>
+            {postedit === "post"
+              ? "Insertar Nuevo Registro"
+              : "Actualizar Registro"}
+          </Typography>
+        </Box>
         <Formik
           initialValues={{
             numejemp: 1,
-            aclar_adic: "22",
-            ent_sal: "R/S",
-            Co_tdoc: "CAR",
-            Co_pdest: "40",
-            Co_tipsal: "01",
+            aclar_adic: postedit === "edit" ? currentrow.aclar_adic : "",
+            ent_sal: postedit === "edit" ? currentrow.ent_sal : "",
+            Co_tdoc: postedit === "edit" ? currentrow.Co_tdoc.Co_docu : "",
+            Co_pdest: postedit === "edit" ? currentrow.Co_pdest.Co_pdest : "",
+            Co_tipsal:
+              postedit === "edit" ? currentrow.Co_tipsal.Co_tipsal : "",
             Num_unidad_reg: "45",
-            Co_nombre: "78082624901",
-            denomindoc: "prueba interfasz",
-            fecha: "2022-12-25",
-            year: "2022",
-            repartir: "R",
+            Co_nombre:
+              postedit === "edit" ? currentrow.Co_nombre.Co_usuario : "",
+            denomindoc: postedit === "edit" ? currentrow.denomindoc : "",            
           }}
           validate={(values) => {
             const errors = {};
@@ -57,29 +178,27 @@ const Formulario = ({ open, onClose }) => {
             return errors;
           }}
           onSubmit={(values, { setSubmitting }) => {
-            
-              setSubmitting(false);
+            setSubmitting(false);
 
-              let date = new Date(Date.now());
+            let date = new Date(Date.now());
 
-              let day = date.getDate();
-              let month = date.getMonth() + 1;
-              let year = date.getFullYear();
+            let day = date.getDate();
+            let month = date.getMonth() + 1;
+            let year = date.getFullYear();
 
-              const fusion = {
-                fecha: String(year + "-" + month + "-" + day),
-                year: String(year),
-                repartir: "R",
-              };
+            const fusion = {
+              fecha: String(year + "-" + month + "-" + day),
+              year: String(year),
+              repartir: "R",
+            };
 
-              const final = Object.assign(values, fusion);
+            const final = Object.assign(values, fusion);
 
-              onClose();
+            onClose(true);
 
-              //Fincion que permite guardar el nuevo registro
-              newrecord(final);
-              
-              console.log(JSON.stringify(values, null, 2));
+            //Funcion que permite guardar el nuevo registro
+            if (postedit === "post") newrecord(final);
+            if (postedit === "edit") updaterecord(values);
           }}
         >
           {({ submitForm, isSubmitting }) => (
@@ -93,9 +212,11 @@ const Formulario = ({ open, onClose }) => {
                     labelId="lblusuario"
                     label="Usuario"
                   >
-                    <MenuItem value={78082624901}>Jose</MenuItem>
-                    <MenuItem value={20}>Twenty</MenuItem>
-                    <MenuItem value={30}>Thirty</MenuItem>
+                    {users.map((elemento) => (
+                      <MenuItem value={elemento.Co_usuario}>
+                        {elemento.datosgenerales}
+                      </MenuItem>
+                    ))}
                   </Field>
                 </Grid>
 
@@ -134,9 +255,11 @@ const Formulario = ({ open, onClose }) => {
                     labelId="lbltd"
                     label="Tipo de Documento"
                   >
-                    <MenuItem value="CAR">Carta</MenuItem>
-                    <MenuItem value="ACT">Actas</MenuItem>
-                    <MenuItem value="CIR">Circulares</MenuItem>
+                    {tipdoc.map((elemento) => (
+                      <MenuItem value={elemento.Co_docu}>
+                        {elemento.Desc_docu}
+                      </MenuItem>
+                    ))}
                   </Field>
                 </Grid>
 
@@ -148,9 +271,15 @@ const Formulario = ({ open, onClose }) => {
                     labelId="lblpd"
                     label="Procedencia o Destino"
                   >
-                    <MenuItem value="40">Vivienda Almest</MenuItem>
-                    <MenuItem value="41">UBA Almest</MenuItem>
-                    <MenuItem value="42">Holgín Almest</MenuItem>
+                    {procdest.map((elemento) =>
+                      elemento.del_sit === "Si" ? (
+                        <MenuItem value={elemento.Co_pdest}>
+                          {elemento.descripcionpdest}
+                        </MenuItem>
+                      ) : (
+                        ""
+                      )
+                    )}
                   </Field>
                 </Grid>
 
@@ -181,8 +310,11 @@ const Formulario = ({ open, onClose }) => {
                     labelId="lblts"
                     label="Tipo de Soporte"
                   >
-                    <MenuItem value="01">Papel</MenuItem>
-                    <MenuItem value="02">Soporte Digital</MenuItem>
+                    {tipsop.map((elemento) => (
+                      <MenuItem value={elemento.Co_tipsal}>
+                        {elemento.Desc_tipsal}
+                      </MenuItem>
+                    ))}
                   </Field>
                 </Grid>
 
@@ -218,7 +350,9 @@ const Formulario = ({ open, onClose }) => {
                     <Button
                       variant="contained"
                       color="primary"
-                      onClick={onClose}
+                      onClick={() => {
+                        onClose(false);
+                      }}
                     >
                       Cancelar
                     </Button>

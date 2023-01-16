@@ -1,4 +1,10 @@
 const columnas = [
+  {
+    accessorKey: "Co_reg",
+        header: "Id",
+        size: 20, 
+        footer: "Id"
+  },
       {
         accessorFn: (row) =>
           row.ent_sal === "R/E"
@@ -44,7 +50,7 @@ const columnas = [
       {
         accessorKey: "fecha",
         header: "Fecha",
-        size: 20,
+        size: 20,        
       },
       {
         accessorKey: "denomindoc",
