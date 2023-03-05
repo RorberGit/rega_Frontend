@@ -5,10 +5,14 @@
 
 .linkapp {
   color: white;  
+  margin-right: 8px;
+  margin-left: 8px;
 }
 
 .linkapp:visited {
   color: white;  
+  margin-right: 8px;
+  margin-left: 8px;
 }
 
 .linkapp:hover {

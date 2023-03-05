@@ -13,7 +13,7 @@ import axios from "axios";
 import Swal from "sweetalert2";
 
 const api = axios.create({
-  baseURL: "http://localhost:8000",
+  
 });
 
 const Formulario = ({ open, onClose, postedit, currentrow }) => {
@@ -54,7 +54,7 @@ const Formulario = ({ open, onClose, postedit, currentrow }) => {
 
   //Guardar nuevo registro
   const updaterecord = async (value) => {
-    console.log(JSON.stringify(value, null, '\t'));
+    console.log(JSON.stringify(value, null, "\t"));
     await api({
       method: "put",
       url: "/sistemareg/" + currentrow.Co_reg,
@@ -167,7 +167,7 @@ const Formulario = ({ open, onClose, postedit, currentrow }) => {
             Num_unidad_reg: "45",
             Co_nombre:
               postedit === "edit" ? currentrow.Co_nombre.Co_usuario : "",
-            denomindoc: postedit === "edit" ? currentrow.denomindoc : "",            
+            denomindoc: postedit === "edit" ? currentrow.denomindoc : "",
           }}
           validate={(values) => {
             const errors = {};

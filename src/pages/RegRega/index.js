@@ -16,7 +16,7 @@ import Formulario from "./Formulario";
 
 //const url = "http://localhost:8000/sistemareg/unidad/45";
 
-const Users = () => {
+const RegRega = () => {
   const [cargando, setCargando] = useState(false);
   const [tableData, setTableData] = useState([]);
 
@@ -136,4 +136,4 @@ const Users = () => {
   );
 };
 
-export default Users;
+export default RegRega;
