@@ -19,7 +19,7 @@ export function AuthProvider(props) {
     }
 
     if (!user && cookies.get("id")){      
-      console.log("preba exito");
+      console.error("prueba exito");
       getusuario();
     }
   });

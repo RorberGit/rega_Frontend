@@ -1,19 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
-import {  
-  MenuItem,
-  Typography,
-  Grid,
-  Paper,
-  Button,
-  Box,
-} from "@mui/material";
+import { MenuItem, Typography, Grid, Paper, Button, Box } from "@mui/material";
 
 import { Formik, Field, Form } from "formik";
 
 import { Select, TextField } from "formik-mui";
-import * as RUTAS from "../constants/routes.constants";
 
 import getUnidades from "../hooks/getUnidades";
 import getUsuarios from "../hooks/getUsuarios";
@@ -30,6 +22,8 @@ export default function Login() {
   const [isUsuario, setIsUsuario] = useState(true);
 
   const navigate = useNavigate();
+  const location = useLocation();
+  const from = location.state?.from?.pathname || "/";
 
   useEffect(() => {
     const cargarUnidades = async () => {
@@ -88,11 +82,12 @@ export default function Login() {
             if (resp.statusCode === 200) {
               delete resp.data.passnreg;
               setCurrentUser(resp.data);
-              
+
               //Navegar al rega
               // window.location.href=ROUTES.REGA;
-              navigate(RUTAS.REGA);
+              //navigate(RUTAS.REGA);
               //window.location.reload();
+              navigate(from, { replace: true });
             }
 
             //Si la ruta esta mal escrita
@@ -112,91 +107,90 @@ export default function Login() {
       }}
     >
       {({ submitForm, isSubmitting }) => (
-        <Form>          
-            <Grid
-              container
-              spacing={2}
-              direction="column"
-              justifyContent="center"
-              alignItems="center"
-              style={{ 
-                minHeight: "100vh", 
-                minWidth: "100vw",
-                position: "fixed",
-                top: 0,
-                left: 0,
-                display: "flex"
-
-                 }}
-            >
-              <Box sx={{ width: "400px" }}>
-                <Paper elevation={12} sx={{ padding: 5 }}>
-                  <Grid item sx={{ marginBottom: 2, textAlign: "center" }}>
-                    <Typography variant="body1" color="red">
-                      {errorMsg}
-                    </Typography>
-                    <Typography variant="body1" color="initial">
-                      Inicio de Sesión
-                    </Typography>
-                  </Grid>
-                  <Grid item sx={{ marginBottom: 2 }}>
-                    <Field
-                      component={Select}
-                      id="unidad"
-                      name="unidad"
-                      label="Unidad"
-                      onChange={handleUnit}
-                      sx={{ minWidth: "320px", maxWidth: "320px" }}
-                    >
-                      {unidades.map((elemento) => (
-                        <MenuItem value={elemento.Num_unidad_reg}>
-                          {elemento.descripcionureg}
+        <Form>
+          <Grid
+            container
+            spacing={2}
+            direction="column"
+            justifyContent="center"
+            alignItems="center"
+            style={{
+              minHeight: "100vh",
+              minWidth: "100vw",
+              position: "fixed",
+              top: 0,
+              left: 0,
+              display: "flex",
+            }}
+          >
+            <Box sx={{ width: "400px" }}>
+              <Paper elevation={12} sx={{ padding: 5 }}>
+                <Grid item sx={{ marginBottom: 2, textAlign: "center" }}>
+                  <Typography variant="body1" color="red">
+                    {errorMsg}
+                  </Typography>
+                  <Typography variant="body1" color="initial">
+                    Inicio de Sesión
+                  </Typography>
+                </Grid>
+                <Grid item sx={{ marginBottom: 2 }}>
+                  <Field
+                    component={Select}
+                    id="unidad"
+                    name="unidad"
+                    label="Unidad"
+                    onChange={handleUnit}
+                    sx={{ minWidth: "320px", maxWidth: "320px" }}
+                  >
+                    {unidades.map((elemento) => (
+                      <MenuItem value={elemento.Num_unidad_reg}>
+                        {elemento.descripcionureg}
+                      </MenuItem>
+                    ))}
+                  </Field>
+                </Grid>
+                <Grid item sx={{ marginBottom: 2 }}>
+                  <Field
+                    component={Select}
+                    id="usuario"
+                    name="usuario"
+                    label="Usuario"
+                    disabled={isUnidad}
+                    onChange={handleUser}
+                    sx={{ minWidth: "320px", maxWidth: "320px" }}
+                  >
+                    {usuarios &&
+                      usuarios.map((elemento) => (
+                        <MenuItem value={elemento.Co_usuario}>
+                          {elemento.datosgenerales}
                         </MenuItem>
                       ))}
-                    </Field>
-                  </Grid>
-                  <Grid item sx={{ marginBottom: 2 }}>
-                    <Field
-                      component={Select}
-                      id="usuario"
-                      name="usuario"
-                      label="Usuario"
-                      disabled={isUnidad}
-                      onChange={handleUser}
-                      sx={{ minWidth: "320px", maxWidth: "320px" }}
-                    >
-                      {usuarios &&
-                        usuarios.map((elemento) => (
-                          <MenuItem value={elemento.Co_usuario}>
-                            {elemento.datosgenerales}
-                          </MenuItem>
-                        ))}
-                    </Field>
-                  </Grid>
-                  <Grid item sx={{ marginBottom: 2 }}>
-                    <Field
-                      component={TextField}
-                      id="password"
-                      name="password"
-                      label="Contraseña"
-                      disabled={isUsuario}
-                      sx={{ minWidth: "320px" }}
-                      type="password"
-                    />
-                  </Grid>
-                  <Grid item sx={{ textAlign: "center" }}>
-                    <Button
-                      variant="contained"
-                      color="primary"
-                      disabled={isSubmitting}
-                      onClick={submitForm}
-                    >
-                      Aceptar
-                    </Button>
-                  </Grid>
-                </Paper>
-              </Box>
-            </Grid>          
+                  </Field>
+                </Grid>
+                <Grid item sx={{ marginBottom: 2 }}>
+                  <Field
+                    component={TextField}
+                    id="password"
+                    name="password"
+                    label="Contraseña"
+                    disabled={isUsuario}
+                    sx={{ minWidth: "320px" }}
+                    type="password"
+                  />
+                </Grid>
+                <Grid item sx={{ textAlign: "center" }}>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    disabled={isSubmitting}
+                    onClick={submitForm}
+                  >
+                    Aceptar
+                  </Button>
+                </Grid>
+              </Paper>
+            </Box>
+          </Grid>
         </Form>
       )}
     </Formik>

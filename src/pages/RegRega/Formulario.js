@@ -8,13 +8,9 @@ import { Formik, Form, Field } from "formik";
 
 import { TextField, Select } from "formik-mui";
 
-import axios from "axios";
+import axios from "../../api/axios";
 
 import Swal from "sweetalert2";
-
-const api = axios.create({
-  
-});
 
 const Formulario = ({ open, onClose, postedit, currentrow }) => {
   const [users, setUsers] = useState([]);
@@ -34,7 +30,7 @@ const Formulario = ({ open, onClose, postedit, currentrow }) => {
 
   //Guardar nuevo registro
   const newrecord = async (value) => {
-    await api({
+    await axios({
       method: "post",
       url: "sistemareg",
       data: value,
@@ -55,7 +51,7 @@ const Formulario = ({ open, onClose, postedit, currentrow }) => {
   //Guardar nuevo registro
   const updaterecord = async (value) => {
     console.log(JSON.stringify(value, null, "\t"));
-    await api({
+    await axios({
       method: "put",
       url: "/sistemareg/" + currentrow.Co_reg,
       data: value,
@@ -75,9 +71,9 @@ const Formulario = ({ open, onClose, postedit, currentrow }) => {
 
   //Poblar select de usuarios
   const GetUserByUnit = async () => {
-    await api({
+    await axios({
       method: "get",
-      url: `/sistema-nombres-reg/unidad/45`,
+      url: `/users/unit/45`,
     })
       .then(function (response) {
         const datos = response.data;
@@ -93,7 +89,7 @@ const Formulario = ({ open, onClose, postedit, currentrow }) => {
 
   //Poblar select de Tipo Documento
   const GetTipDoc = async () => {
-    await api({
+    await axios({
       method: "get",
       url: `/sistema-tip-doc-cal`,
     })
@@ -111,7 +107,7 @@ const Formulario = ({ open, onClose, postedit, currentrow }) => {
 
   //Poblar select Procedencia Destino
   const GetProcDest = async () => {
-    await api({
+    await axios({
       method: "get",
       url: `/sistemaprocdest`,
     })
@@ -129,7 +125,7 @@ const Formulario = ({ open, onClose, postedit, currentrow }) => {
 
   //Poblar select Procedencia Destino
   const GetTipSop = async () => {
-    await api({
+    await axios({
       method: "get",
       url: `/sistema-tip-sal`,
     })

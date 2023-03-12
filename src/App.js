@@ -7,16 +7,18 @@ import "./App.css";
 import Cookies from "universal-cookie";
 
 import Layout from "./components/Layout";
-import About from "./pages/About/About";
-import Home from "./pages/Home/index";
+import DashBoard from "./pages/DashBoard";
 import RegRega from "./pages/RegRega";
-import Blog from "./pages/Blog";
+import Usuarios from "./pages/Usuarios";
+import Units from "./pages/Units";
+import ProcDest from "./pages/ProcDest";
+
+import Home from "./pages/Home/index";
+
 import Login from "./pages/Login";
-import Menu from "./pages/Menu/Menu";
 import PageNotFound from "./pages/PageNotFound";
 import RequireAuth from "./components/RequireAuth";
 import Head from "./components/head";
-// eslint-disable-next-line import/no-unresolved
 import { useAuthContext } from "./contexts/auth-context";
 
 function App() {
@@ -43,14 +45,21 @@ function App() {
           <Route path="/login" element={<Login />} />
 
           <Route element={<RequireAuth />}>
-            <Route path="/" element={<RegRega />} />
-            <Route path="/home" element={<Home />} />
+            <Route path="/" element={<DashBoard />} />
+          </Route>
+
+          <Route element={<RequireAuth />}>
+            <Route path="/rega" element={<RegRega />} />
           </Route>
           
-          <Route path="/about" element={<About />} />
-          <Route path="/menu" element={<Menu />} />
-          <Route path="/RegRega" element={<RegRega />} />
-          <Route path="/blog/:slug" element={<Blog />}></Route>
+          <Route path="/users" element={<Usuarios />} />
+          <Route path="/units" element={<Units />} />
+          <Route path="/procdest" element={<ProcDest />} />
+
+          <Route element={<RequireAuth />}>
+            <Route path="/home" element={<Home />} />
+          </Route>
+
           <Route element={<PageNotFound />} />
         </Route>
       </Routes>

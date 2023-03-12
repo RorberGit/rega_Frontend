@@ -24,6 +24,8 @@ import {
   Logout,
 } from "@mui/icons-material";
 
+import style from "../styles/head.module.css";
+
 export default function Head() {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
@@ -60,17 +62,23 @@ export default function Head() {
                     </Link>
                   </Box>
                   <Box className="boxlink">
-                    <Link
-                      component={LinkRouter}
-                      to="/RegRega"
-                      className="linkapp"
-                    >
+                    <Link component={LinkRouter} to="/rega" className="linkapp">
                       Rega
                     </Link>
                   </Box>
                   <Box className="boxlink">
-                    <Link component={LinkRouter} to="/Home" className="linkapp">
-                      Home
+                    <Link component={LinkRouter} to="/users" className={style.link}>
+                      Usuarios
+                    </Link>
+                  </Box>
+                  <Box className="boxlink">
+                    <Link component={LinkRouter} to="/units" className={style.link}>
+                      Unidades
+                    </Link>
+                  </Box>
+                  <Box className="boxlink">
+                    <Link component={LinkRouter} to="/procdest" className={style.link}>
+                      Procedencia o Destino
                     </Link>
                   </Box>
                   <Box className="boxlink">
